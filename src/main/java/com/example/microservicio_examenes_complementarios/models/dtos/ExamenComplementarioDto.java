@@ -19,13 +19,20 @@ public class ExamenComplementarioDto {
     private String descripcion;
     private String resumenResultados;
     private Date fechaResultado;
-    private Integer idHistoriaClinica;
-    private Integer idMedico;
     private Date fechaSolicitud;
     private String enlaceArchivoResultado;
     private Date createdAt;
     private Date updatedAt;
     private Date deletedAt;
+    private Integer idHistoriaClinica;
+    private String diagnosticoPresuntivo;
+    private Integer idEspecialidad;
+    private String nombreEspecialidad;
+    private Integer idMedico;
+    private String nombreMedico;
+    private Integer idPaciente;
+    private String pacientePropietario;
+    private String ciPropietario;
 
     public ExamenComplementarioDto convertirExamenComplementarioEntityAExamenComplementarioDto(ExamenComplementarioEntity examen) {
         ExamenComplementarioDto dto = new ExamenComplementarioDto();
@@ -34,13 +41,20 @@ public class ExamenComplementarioDto {
         dto.setDescripcion(examen.getDescripcion());
         dto.setResumenResultados(examen.getResumenResultados());
         dto.setFechaResultado(examen.getFechaResultado());
-        dto.setIdHistoriaClinica(examen.getHistoriaClinica().getIdHistoriaClinica());
-        dto.setIdMedico(examen.getMedico().getIdUsuario());
         dto.setFechaSolicitud(examen.getFechaSolicitud());
         dto.setEnlaceArchivoResultado(examen.getEnlaceArchivoResultado());
         dto.setCreatedAt(examen.getCreatedAt());
         dto.setUpdatedAt(examen.getUpdatedAt());
         dto.setDeletedAt(examen.getDeletedAt());
+        dto.setIdHistoriaClinica(examen.getHistoriaClinica().getIdHistoriaClinica());
+        dto.setDiagnosticoPresuntivo(examen.getHistoriaClinica().getDiagnosticoPresuntivo());
+        dto.setIdEspecialidad(examen.getHistoriaClinica().getEspecialidad().getIdEspecialidad());
+        dto.setNombreEspecialidad(examen.getHistoriaClinica().getEspecialidad().getNombre());
+        dto.setIdMedico(examen.getHistoriaClinica().getMedico().getIdUsuario());
+        dto.setNombreMedico(examen.getMedico().getNombres() + " " + examen.getMedico().getApellidoPaterno()+ " " + examen.getMedico().getApellidoMaterno());
+        dto.setIdPaciente(examen.getHistoriaClinica().getPaciente().getIdUsuario());
+        dto.setPacientePropietario(examen.getHistoriaClinica().getPaciente().getNombres() + " " + examen.getHistoriaClinica().getPaciente().getApellidoPaterno()+ " " + examen.getHistoriaClinica().getPaciente().getApellidoMaterno());
+        dto.setCiPropietario(examen.getHistoriaClinica().getPaciente().getCi());        
         return dto;
     }
 }
