@@ -32,7 +32,7 @@ public class ExamenComplementarioEntity {
     @Column(name = "resumen_resultados")
     private String resumenResultados;
 
-    @Temporal(TemporalType.DATE)
+    @Temporal(TemporalType.TIMESTAMP)
     @Column(name = "fecha_resultado")
     private Date fechaResultado;
 

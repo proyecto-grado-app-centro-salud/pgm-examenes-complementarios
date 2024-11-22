@@ -28,6 +28,8 @@ public class ExamenesComplementariosService {
     @Autowired
     private UsuariosRepositoryJPA usuariosRepositoryJPA;
 
+    @Autowired
+    PDFService pdfService;
     public ExamenComplementarioDto registrarExamenComplementario(ExamenComplementarioDto examenDto) {
         UsuarioEntity medicoEntity = usuariosRepositoryJPA.findById(examenDto.getIdMedico())
                 .orElseThrow(() -> new RuntimeException("Médico no encontrado"));
@@ -87,5 +89,14 @@ public class ExamenesComplementariosService {
         return examenes.stream()
                         .map(examen -> new ExamenComplementarioDto().convertirExamenComplementarioEntityAExamenComplementarioDto(examen))
                         .toList();
+    }
+
+    public byte[] obtenerPDFExamenComplementario(ExamenComplementarioDto examenComplementarioDto) {
+        try {
+                return pdfService.generarPdfReporteExamenComplementario(examenComplementarioDto);
+        } catch (Exception e) {
+                e.printStackTrace();
+                throw new RuntimeException("Error al generar el PDF de la historia clinica.", e);
+        }
     }
 }

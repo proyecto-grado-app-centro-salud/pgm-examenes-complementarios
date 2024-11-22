@@ -1,9 +1,13 @@
 package com.example.microservicio_examenes_complementarios.controllers;
 
 
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -15,7 +19,6 @@ import com.example.microservicio_examenes_complementarios.services.ExamenesCompl
 
 
 @RestController
-@CrossOrigin(origins = "*", allowedHeaders = "*")
 @RequestMapping(path = "/examenes-complementarios")
 public class ExamenesComplementariosController {
     @Autowired
@@ -75,5 +78,22 @@ public class ExamenesComplementariosController {
     @GetMapping("/info-container")
     public @ResponseBody String obtenerInformacionContenedor() {
         return "microservicio historias clinicas: " + containerMetadataService.retrieveContainerMetadataInfo();
+    }
+    @GetMapping("/pdf")
+    public ResponseEntity<byte[]> obtenerPDFDeNotaReferencia(ExamenComplementarioDto examenComplementarioDto) {
+        try {
+            byte[] pdfBytes = examenesComplementariosService.obtenerPDFExamenComplementario(examenComplementarioDto);
+            // Path path = Paths.get("EC.pdf");
+            // Files.write(path, pdfBytes);
+            HttpHeaders headers = new HttpHeaders();
+            headers.add("Content-Disposition", "inline; filename=ExamenComplementario.pdf");
+            headers.add("Content-Type", "application/pdf");
+            headers.add("Content-Length", "" + pdfBytes.length);
+
+            return new ResponseEntity<>(pdfBytes, headers, HttpStatus.OK);
+        } catch (Exception e) {
+            e.printStackTrace();
+            return new ResponseEntity<>( HttpStatus.NOT_FOUND);
+        }
     }
 }
