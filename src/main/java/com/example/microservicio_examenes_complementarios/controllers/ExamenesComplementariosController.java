@@ -37,9 +37,9 @@ public class ExamenesComplementariosController {
     }
 
     @GetMapping
-    public ResponseEntity<List<ExamenComplementarioDto>> obtenerTodosExamenesComplementarios() {
+    public ResponseEntity<List<ExamenComplementarioDto>> obtenerTodosExamenesComplementarios(@RequestParam(required = false) String fechaInicio, @RequestParam(required = false) String fechaFin,@RequestParam(required = false) String ciPaciente,@RequestParam(required = false) String nombrePaciente,@RequestParam(required = false) String nombreMedico,@RequestParam(required = false) String nombreEspecialidad,@RequestParam(required = false) String diagnosticoPresuntivo,@RequestParam(required = false) Integer page,@RequestParam(required = false) Integer size) {
         try {
-            List<ExamenComplementarioDto> examenes = examenesComplementariosService.obtenerTodosExamenesComplementarios();
+            List<ExamenComplementarioDto> examenes = examenesComplementariosService.obtenerTodosExamenesComplementarios(fechaInicio,fechaFin,ciPaciente,nombrePaciente,nombreMedico,nombreEspecialidad,diagnosticoPresuntivo,page,size);
             return new ResponseEntity<>(examenes, HttpStatus.OK);
         } catch (Exception e) {
             return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
@@ -67,9 +67,9 @@ public class ExamenesComplementariosController {
     }
     
     @GetMapping("/paciente/{idPaciente}")
-    public ResponseEntity<List<ExamenComplementarioDto>> obtenerExamenesDePaciente(@PathVariable int idPaciente) {
+    public ResponseEntity<List<ExamenComplementarioDto>> obtenerExamenesDePaciente(@PathVariable int idPaciente,@RequestParam(required = false) String fechaInicio, @RequestParam(required = false) String fechaFin,@RequestParam(required = false) String nombreMedico,@RequestParam(required = false) String nombreEspecialidad,@RequestParam(required = false) String diagnosticoPresuntivo,@RequestParam(required = false) Integer page,@RequestParam(required = false) Integer size) {
         try {
-            List<ExamenComplementarioDto> examenes = examenesComplementariosService.obtenerExamenesDePaciente(idPaciente);
+            List<ExamenComplementarioDto> examenes = examenesComplementariosService.obtenerExamenesDePaciente(idPaciente,fechaInicio,fechaFin,nombreMedico,nombreEspecialidad,diagnosticoPresuntivo,page,size);
             return new ResponseEntity<>(examenes, HttpStatus.OK);
         } catch (Exception e) {
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
@@ -80,7 +80,7 @@ public class ExamenesComplementariosController {
         return "microservicio historias clinicas: " + containerMetadataService.retrieveContainerMetadataInfo();
     }
     @GetMapping("/pdf")
-    public ResponseEntity<byte[]> obtenerPDFDeNotaReferencia(ExamenComplementarioDto examenComplementarioDto) {
+    public ResponseEntity<byte[]> obtenerPDFDeExamenComplementario(ExamenComplementarioDto examenComplementarioDto) {
         try {
             byte[] pdfBytes = examenesComplementariosService.obtenerPDFExamenComplementario(examenComplementarioDto);
             // Path path = Paths.get("EC.pdf");
