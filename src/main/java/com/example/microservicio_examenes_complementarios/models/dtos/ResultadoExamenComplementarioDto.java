@@ -15,7 +15,7 @@ import lombok.Setter;
 @NoArgsConstructor
 public class ResultadoExamenComplementarioDto {
 
-    private int idResultadoExamenComplementario;
+    private Integer idResultadoExamenComplementario;
     private String titulo;
     private String resumenResultado;
     private Date fechaResultado;

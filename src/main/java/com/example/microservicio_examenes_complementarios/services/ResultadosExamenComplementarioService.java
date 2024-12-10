@@ -69,8 +69,9 @@ public class ResultadosExamenComplementarioService {
         resultadoEntity.setResumenResultado(resultadoDto.getResumenResultado());
         resultadoEntity.setFechaResultado(resultadoDto.getFechaResultado());
         resultadoEntity.setExamenComplementario(examenComplementarioEntity);
-        if(!converterVariablesService.arreglarFileName("resultados-examenes-complementarios/"+file.getOriginalFilename()).equals(resultadoEntity.getKeyArchivo())){
-            s3Service.deleteFile(resultadoEntity.getKeyArchivo());
+        //if(!converterVariablesService.arreglarFileName("resultados-examenes-complementarios/"+file.getOriginalFilename()).equals(resultadoEntity.getKeyArchivo())){
+        if(file!=null && file.getSize()>0 && !converterVariablesService.arreglarFileName("resultados-examenes-complementarios/"+file.getOriginalFilename()).equals(resultadoEntity.getKeyArchivo())){
+            //s3Service.deleteFile(resultadoEntity.getKeyArchivo());
             String key = s3Service.uploadFileResultadoExamenComplementario(file);
             resultadoEntity.setKeyArchivo(key);
             resultadoEntity.setEnlaceArchivoResultado(converterVariablesService.convertirKeyImagenAEnlaceImagen(key));

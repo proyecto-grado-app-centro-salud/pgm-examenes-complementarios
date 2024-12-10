@@ -1,0 +1,10 @@
+###
+GET http://localhost:9004/api/microservicio-examenes-complementarios/examenes-complementarios/pdf
+Content-Type: application/json
+
+{
+      "nombre": "nombre",
+      "descripcion": "descripcion",
+      "idHistoriaClinica": 1,
+      "idMedico": 8490543
+    }

@@ -63,7 +63,7 @@
 		<dependency>
 			<groupId>org.springframework.cloud</groupId>
 			<artifactId>spring-cloud-starter-bootstrap</artifactId>
-		</dependency>
+		</dependency> 
 		<!-- pdf -->
 		<dependency>
 			<groupId>net.sf.jasperreports</groupId>

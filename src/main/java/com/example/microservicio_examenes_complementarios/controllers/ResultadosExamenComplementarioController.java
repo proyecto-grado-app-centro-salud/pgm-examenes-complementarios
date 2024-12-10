@@ -6,6 +6,7 @@ import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -21,6 +22,7 @@ import com.example.microservicio_examenes_complementarios.services.ResultadosExa
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 @RestController
+//@CrossOrigin(origins = "*", allowedHeaders = "*")
 @RequestMapping("/v1.0/resultados-examen-complementario")
 public class ResultadosExamenComplementarioController {
 
@@ -37,6 +39,7 @@ public class ResultadosExamenComplementarioController {
             List<ResultadoExamenComplementarioDto> resultados = resultadoExamenComplementarioService.obtenerResultados();
             return new ResponseEntity<>(resultados, HttpStatus.OK);
         } catch (Exception e) {
+            e.printStackTrace();
             return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
@@ -47,6 +50,7 @@ public class ResultadosExamenComplementarioController {
             ResultadoExamenComplementarioDto resultado = resultadoExamenComplementarioService.obtenerResultadoPorId(id);
             return new ResponseEntity<>(resultado, HttpStatus.OK);
         } catch (Exception e) {
+            e.printStackTrace();
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         }
     }
@@ -56,6 +60,7 @@ public class ResultadosExamenComplementarioController {
             List<ResultadoExamenComplementarioDto> resultado = resultadoExamenComplementarioService.obtenerResultadosDeExamen(idExamenComplementario);
             return new ResponseEntity<>(resultado, HttpStatus.OK);
         } catch (Exception e) {
+            e.printStackTrace();
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         }
     }
@@ -69,6 +74,7 @@ public class ResultadosExamenComplementarioController {
             ResultadoExamenComplementarioDto resultadoCreado = resultadoExamenComplementarioService.crearResultado(resultadoDto,file);
             return new ResponseEntity<>(resultadoCreado, HttpStatus.CREATED);
         } catch (Exception e) {
+            e.printStackTrace();
             return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
         }
     }
@@ -77,7 +83,7 @@ public class ResultadosExamenComplementarioController {
     public ResponseEntity<ResultadoExamenComplementarioDto> actualizarResultado(
             @PathVariable int id,
             @RequestParam("data") String data,
-            @RequestParam("file") MultipartFile file) {
+            @RequestParam(required = false) MultipartFile file) {
 
         try {
             ResultadoExamenComplementarioDto resultadoDto = objectMapper.readValue(data, ResultadoExamenComplementarioDto.class);
@@ -86,6 +92,8 @@ public class ResultadosExamenComplementarioController {
 
             return new ResponseEntity<>(resultadoActualizado, HttpStatus.OK);
         } catch (Exception e) {
+            e.printStackTrace();
+
             return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
         }
     }
@@ -96,6 +104,9 @@ public class ResultadosExamenComplementarioController {
             resultadoExamenComplementarioService.eliminarResultado(id);
             return new ResponseEntity<>(HttpStatus.NO_CONTENT);
         } catch (Exception e) {
+
+            e.printStackTrace();
+
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         }
     }

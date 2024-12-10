@@ -59,23 +59,19 @@ public class ExamenesComplementariosService {
         return new ExamenComplementarioDto().convertirExamenComplementarioEntityAExamenComplementarioDto(examenEntity);
     }
 
-    public List<ExamenComplementarioDto> obtenerTodosExamenesComplementarios(String fechaInicio, String fechaFin, String ciPaciente, String nombrePaciente, String nombreMedico, String nombreEspecialidad, String diagnosticoPresuntivo, Integer page, Integer size) {
+    public Page<ExamenComplementarioDto> obtenerTodosExamenesComplementarios(String fechaInicio, String fechaFin, String ciPaciente, String nombrePaciente, String nombreMedico, String nombreEspecialidad, String diagnosticoPresuntivo, Integer page, Integer size) {
         List<ExamenComplementarioEntity> examenes = new ArrayList<>();
-        Specification<ExamenComplementarioEntity> spec = Specification.where(ExamenesComplementariosSpecification.obtenerExamenesComplementariosPorParametros(convertirTiposDatosService.convertirStringADate(fechaInicio),convertirTiposDatosService.convertirStringADate(fechaFin),ciPaciente,nombrePaciente,nombreMedico,nombreEspecialidad,diagnosticoPresuntivo));
+        Pageable pageable = Pageable.unpaged();
         if(page!=null && size!=null){
-            Pageable pageable = PageRequest.of(page, size);
-            Page<ExamenComplementarioEntity> examenesEntitiesPage=examenComplementarioRepositoryJPA.findAll(spec,pageable);
-            examenes=examenesEntitiesPage.getContent();
-        }else{
-            examenes=examenComplementarioRepositoryJPA.findAll(spec);
-        }  
-        return examenes.stream()
-                .map(examen -> new ExamenComplementarioDto().convertirExamenComplementarioEntityAExamenComplementarioDto(examen))
-                .toList();
+            pageable = PageRequest.of(page, size);
+        } 
+        Specification<ExamenComplementarioEntity> spec = Specification.where(ExamenesComplementariosSpecification.obtenerExamenesComplementariosPorParametros(convertirTiposDatosService.convertirStringADate(fechaInicio),convertirTiposDatosService.convertirStringADate(fechaFin),ciPaciente,nombrePaciente,nombreMedico,nombreEspecialidad,diagnosticoPresuntivo));
+        Page<ExamenComplementarioEntity> examenesEntitiesPage=examenComplementarioRepositoryJPA.findAll(spec,pageable);
+        return examenesEntitiesPage.map(ExamenComplementarioDto::convertirExamenComplementarioEntityAExamenComplementarioDto);
     }
 
     public ExamenComplementarioDto obtenerExamenComplementarioPorId(Integer id) {
-        ExamenComplementarioEntity examenEntity = examenComplementarioRepositoryJPA.findById(id)
+        ExamenComplementarioEntity examenEntity = examenComplementarioRepositoryJPA.findByIdExamenComplementarioAndDeletedAtIsNull(id)
                 .orElseThrow(() -> new RuntimeException("Examen complementario no encontrado"));
         return new ExamenComplementarioDto().convertirExamenComplementarioEntityAExamenComplementarioDto(examenEntity);
     }
@@ -101,19 +97,15 @@ public class ExamenesComplementariosService {
         return new ExamenComplementarioDto().convertirExamenComplementarioEntityAExamenComplementarioDto(examenEntity);
     }
 
-    public List<ExamenComplementarioDto> obtenerExamenesDePaciente(int idPaciente, String fechaInicio, String fechaFin, String nombreMedico, String nombreEspecialidad, String diagnosticoPresuntivo, Integer page, Integer size) {
+    public Page<ExamenComplementarioDto> obtenerExamenesDePaciente(int idPaciente, String fechaInicio, String fechaFin, String nombreMedico, String nombreEspecialidad, String diagnosticoPresuntivo, Integer page, Integer size) {
         List<ExamenComplementarioEntity> examenes = new ArrayList<>();
-        Specification<ExamenComplementarioEntity> spec = Specification.where(ExamenesComplementariosSpecification.obtenerExamenesComplementariosDePacientePorParametros(idPaciente,convertirTiposDatosService.convertirStringADate(fechaInicio),convertirTiposDatosService.convertirStringADate(fechaFin),nombreMedico,nombreEspecialidad,diagnosticoPresuntivo));
+        Pageable pageable = Pageable.unpaged();
         if(page!=null && size!=null){
-            Pageable pageable = PageRequest.of(page, size);
-            Page<ExamenComplementarioEntity> examenesEntitiesPage=examenComplementarioRepositoryJPA.findAll(spec,pageable);
-            examenes=examenesEntitiesPage.getContent();
-        }else{
-            examenes=examenComplementarioRepositoryJPA.findAll(spec);
-        }  
-        return examenes.stream()
-                .map(examen -> new ExamenComplementarioDto().convertirExamenComplementarioEntityAExamenComplementarioDto(examen))
-                .toList();
+            pageable = PageRequest.of(page, size);
+        } 
+        Specification<ExamenComplementarioEntity> spec = Specification.where(ExamenesComplementariosSpecification.obtenerExamenesComplementariosDePacientePorParametros(idPaciente,convertirTiposDatosService.convertirStringADate(fechaInicio),convertirTiposDatosService.convertirStringADate(fechaFin),nombreMedico,nombreEspecialidad,diagnosticoPresuntivo));
+        Page<ExamenComplementarioEntity> examenesEntitiesPage=examenComplementarioRepositoryJPA.findAll(spec,pageable);
+        return examenesEntitiesPage.map(ExamenComplementarioDto::convertirExamenComplementarioEntityAExamenComplementarioDto);
     }
 
     public byte[] obtenerPDFExamenComplementario(ExamenComplementarioDto examenComplementarioDto) {
@@ -123,5 +115,13 @@ public class ExamenesComplementariosService {
                 e.printStackTrace();
                 throw new RuntimeException("Error al generar el PDF de la historia clinica.", e);
         }
+    }
+
+    public void delete(int id) {
+        ExamenComplementarioEntity examenEntity = examenComplementarioRepositoryJPA.findByIdExamenComplementarioAndDeletedAtIsNull(id)
+        .orElseThrow(() -> new RuntimeException("Examen complementario no encontrado"));
+        examenEntity.markAsDeleted();
+        examenComplementarioRepositoryJPA.save(examenEntity);
+
     }
 }

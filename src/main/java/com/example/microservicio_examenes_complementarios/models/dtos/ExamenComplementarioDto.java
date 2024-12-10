@@ -34,7 +34,7 @@ public class ExamenComplementarioDto {
     private String pacientePropietario;
     private String ciPropietario;
 
-    public ExamenComplementarioDto convertirExamenComplementarioEntityAExamenComplementarioDto(ExamenComplementarioEntity examen) {
+    public static ExamenComplementarioDto convertirExamenComplementarioEntityAExamenComplementarioDto(ExamenComplementarioEntity examen) {
         ExamenComplementarioDto dto = new ExamenComplementarioDto();
         dto.setId(examen.getIdExamenComplementario());
         dto.setNombre(examen.getNombre());

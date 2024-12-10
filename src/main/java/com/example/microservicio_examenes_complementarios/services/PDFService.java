@@ -54,7 +54,7 @@ public class PDFService {
         }
         InputStream jrxmlInputStream = getClass().getClassLoader().getResourceAsStream("reports/examen_complementario.jrxml");
         HistoriaClinicaEntity historiaClinicaEntity = historiaClinicaRepositoryJPA.findById(examenComplementarioDto.getIdHistoriaClinica()).orElseThrow(() -> new RuntimeException("Historia clinica no encontrada"));
-        UsuarioEntity pacienteEntity = usuariosRepositoryJPA.findById(examenComplementarioDto.getIdPaciente()).orElseThrow(() -> new RuntimeException("Usuario no encontrado"));
+        UsuarioEntity pacienteEntity = usuariosRepositoryJPA.findById(historiaClinicaEntity.getPaciente().getIdUsuario()).orElseThrow(() -> new RuntimeException("Usuario no encontrado"));
         UsuarioEntity medicoEntity = usuariosRepositoryJPA.findById(examenComplementarioDto.getIdMedico()).orElseThrow(() -> new RuntimeException("Usuario no encontrado"));
         EspecialidadesEntity especialidadesEntity = especialidadesRepositoryJPA.findById(historiaClinicaEntity.getEspecialidad().getIdEspecialidad()).orElseThrow(() -> new RuntimeException("Especialidad no encontrada"));
         if (jrxmlInputStream == null) {
