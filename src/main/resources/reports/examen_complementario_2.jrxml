@@ -23,6 +23,9 @@
 			<element kind="staticText" uuid="10563923-6b66-43f5-a075-411f5e6b111c" x="20" y="13" width="160" height="30" fontSize="12.0" bold="false" hTextAlign="Center" vTextAlign="Middle">
 				<text><![CDATA[HOSPITAL CLINICO]]></text>
 			</element>
+			<element kind="image" uuid="ab5c3dad-3546-4041-89c8-b2ce2e7f4510" x="440" y="0" width="38" height="30">
+				<expression><![CDATA[$P{IMAGE_PATH}]]></expression>
+			</element>
 		</band>
 		<band height="120">
 			<element kind="staticText" uuid="377a5459-3c71-47ae-9b8f-ffa618933d71" mode="Opaque" x="20" y="8" width="120" height="16" forecolor="#FFFFFF" backcolor="#0A4A6E" bold="true" hTextAlign="Center" vTextAlign="Middle">
@@ -117,16 +120,16 @@
 				<pen lineWidth="2.0"/>
 			</element>
 		</band>
-		<band height="157" splitType="Immediate">
-			<element kind="staticText" uuid="69807dce-685d-4085-9557-6c1505a09f10" positionType="Float" stretchType="NoStretch" x="0" y="0" width="515" height="30" fontSize="12.0" bold="true" hTextAlign="Center" vTextAlign="Middle">
+		<band height="315" splitType="Stretch">
+			<element kind="staticText" uuid="69807dce-685d-4085-9557-6c1505a09f10" stretchType="ElementGroupHeight" x="0" y="0" width="515" height="30" fontSize="12.0" bold="true" hTextAlign="Center" vTextAlign="Middle">
 				<text><![CDATA[EXAMEN COMPLEMENTARIO]]></text>
 				<property name="com.jaspersoft.studio.unit.height" value="pixel"/>
 			</element>
-			<element kind="staticText" uuid="f198ee49-d918-495f-88ed-81a814c49424" positionType="Float" stretchType="NoStretch" x="0" y="30" width="515" height="20" bold="true" vTextAlign="Middle">
+			<element kind="staticText" uuid="f198ee49-d918-495f-88ed-81a814c49424" x="0" y="30" width="515" height="16" bold="true">
 				<text><![CDATA[Nombre]]></text>
 				<property name="com.jaspersoft.studio.unit.height" value="px"/>
 			</element>
-			<element kind="textField" uuid="86c838e0-48c0-41b8-a974-0ea88b6dff9d" positionType="Float" stretchType="NoStretch" x="0" y="50" width="515" height="30" textAdjust="StretchHeight" evaluationTime="Auto">
+			<element kind="textField" uuid="86c838e0-48c0-41b8-a974-0ea88b6dff9d" positionType="Float" stretchType="ElementGroupHeight" x="0" y="46" width="515" height="32" textAdjust="StretchHeight" evaluationTime="Auto">
 				<expression><![CDATA[$P{nombre}]]></expression>
 				<property name="com.jaspersoft.studio.unit.height" value="px"/>
 				<box>
@@ -137,13 +140,11 @@
 					<rightPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
 				</box>
 			</element>
-			<element kind="staticText" uuid="f198ee49-d918-495f-88ed-81a814c49424" positionType="Float" x="0" y="80" width="515" height="20" bold="true" vTextAlign="Middle">
+			<element kind="staticText" uuid="f198ee49-d918-495f-88ed-81a814c49424" x="0" y="78" width="515" height="16" bold="true">
 				<text><![CDATA[Descripcion]]></text>
 				<property name="com.jaspersoft.studio.unit.height" value="px"/>
-				<property name="com.jaspersoft.studio.unit.y" value="px"/>
-				<box topPadding="0" leftPadding="0" bottomPadding="0" rightPadding="0"/>
 			</element>
-			<element kind="textField" uuid="86c838e0-48c0-41b8-a974-0ea88b6dff9d" positionType="Float" stretchType="NoStretch" x="0" y="100" width="515" height="30" textAdjust="StretchHeight" evaluationTime="Auto">
+			<element kind="textField" uuid="86c838e0-48c0-41b8-a974-0ea88b6dff9d" positionType="Float" stretchType="ElementGroupHeight" x="0" y="94" width="515" height="206" textAdjust="StretchHeight" evaluationTime="Auto">
 				<expression><![CDATA[$P{descripcion}]]></expression>
 				<property name="com.jaspersoft.studio.unit.height" value="px"/>
 				<box>

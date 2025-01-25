@@ -64,7 +64,7 @@ public class ExamenesComplementariosSpecification {
             throw new RuntimeException("Error obtener notas evo por parametros");
         }
     }
-     public static Specification obtenerExamenesComplementariosDePacientePorParametros(int idPaciente,Date minDate, Date maxDate,
+     public static Specification obtenerExamenesComplementariosDePacientePorParametros(String idPaciente,Date minDate, Date maxDate,
             String nombreMedico, String nombreEspecialidad,
             String diagnosticoPresuntivo) {
           try {

@@ -8,3 +8,5 @@ Content-Type: application/json
       "idHistoriaClinica": 1,
       "idMedico": 8490543
     }
+###
+GET http://localhost:8081/api/microservicio-examenes-complementarios/examenes-complementarios

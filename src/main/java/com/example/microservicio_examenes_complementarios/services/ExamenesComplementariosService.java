@@ -18,7 +18,10 @@ import com.example.microservicio_examenes_complementarios.repositories.HistoriaC
 import com.example.microservicio_examenes_complementarios.repositories.UsuariosRepositoryJPA;
 import com.example.microservicio_examenes_complementarios.util.ExamenesComplementariosSpecification;
 
+import jakarta.transaction.Transactional;
+
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 import java.util.Optional;
 
@@ -40,9 +43,9 @@ public class ExamenesComplementariosService {
     @Autowired
     private ConvertirTiposDatosService convertirTiposDatosService;
     public ExamenComplementarioDto registrarExamenComplementario(ExamenComplementarioDto examenDto) {
-        UsuarioEntity medicoEntity = usuariosRepositoryJPA.findById(examenDto.getIdMedico())
+        UsuarioEntity medicoEntity = usuariosRepositoryJPA.findByIdUsuarioAndDeletedAtIsNull(examenDto.getIdMedico())
                 .orElseThrow(() -> new RuntimeException("Médico no encontrado"));
-        HistoriaClinicaEntity historiaClinicaEntity = historiaClinicaRepositoryJPA.findById(examenDto.getIdHistoriaClinica())
+        HistoriaClinicaEntity historiaClinicaEntity = historiaClinicaRepositoryJPA.findByIdHistoriaClinicaAndDeletedAtIsNull(examenDto.getIdHistoriaClinica())
                 .orElseThrow(() -> new RuntimeException("Historia clínica no encontrada"));
 
         ExamenComplementarioEntity examenEntity = new ExamenComplementarioEntity();
@@ -77,11 +80,11 @@ public class ExamenesComplementariosService {
     }
 
     public ExamenComplementarioDto actualizarExamenComplementario(Integer idExamen, ExamenComplementarioDto examenDto) {
-        ExamenComplementarioEntity examenEntity = examenComplementarioRepositoryJPA.findById(idExamen)
+        ExamenComplementarioEntity examenEntity = examenComplementarioRepositoryJPA.findByIdExamenComplementarioAndDeletedAtIsNull(idExamen)
                 .orElseThrow(() -> new RuntimeException("Examen complementario no encontrado"));
-        UsuarioEntity usuarioEntity = usuariosRepositoryJPA.findById(examenDto.getIdMedico())
+        UsuarioEntity usuarioEntity = usuariosRepositoryJPA.findByIdUsuarioAndDeletedAtIsNull(examenDto.getIdMedico())
                 .orElseThrow(() -> new RuntimeException("Médico no encontrado"));
-        HistoriaClinicaEntity historiaClinicaEntity = historiaClinicaRepositoryJPA.findById(examenDto.getIdHistoriaClinica())
+        HistoriaClinicaEntity historiaClinicaEntity = historiaClinicaRepositoryJPA.findByIdHistoriaClinicaAndDeletedAtIsNull(examenDto.getIdHistoriaClinica())
                 .orElseThrow(() -> new RuntimeException("Historia clínica no encontrada"));
         
         examenEntity.setNombre(examenDto.getNombre());
@@ -97,7 +100,7 @@ public class ExamenesComplementariosService {
         return new ExamenComplementarioDto().convertirExamenComplementarioEntityAExamenComplementarioDto(examenEntity);
     }
 
-    public Page<ExamenComplementarioDto> obtenerExamenesDePaciente(int idPaciente, String fechaInicio, String fechaFin, String nombreMedico, String nombreEspecialidad, String diagnosticoPresuntivo, Integer page, Integer size) {
+    public Page<ExamenComplementarioDto> obtenerExamenesDePaciente(String idPaciente, String fechaInicio, String fechaFin, String nombreMedico, String nombreEspecialidad, String diagnosticoPresuntivo, Integer page, Integer size) {
         List<ExamenComplementarioEntity> examenes = new ArrayList<>();
         Pageable pageable = Pageable.unpaged();
         if(page!=null && size!=null){
@@ -123,5 +126,10 @@ public class ExamenesComplementariosService {
         examenEntity.markAsDeleted();
         examenComplementarioRepositoryJPA.save(examenEntity);
 
+    }
+    
+    @Transactional
+    public void deleteExamenesComplementariosDeHistoriaClinica(int idHistoriaClinica) {
+       examenComplementarioRepositoryJPA.markAsDeletedAllExamenesComplementariosFromHistoriaClinica(idHistoriaClinica,new Date());
     }
 }

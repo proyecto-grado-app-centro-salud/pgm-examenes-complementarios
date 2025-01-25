@@ -6,6 +6,7 @@ import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -21,6 +22,8 @@ import com.example.microservicio_examenes_complementarios.models.dtos.ResultadoE
 import com.example.microservicio_examenes_complementarios.services.ResultadosExamenComplementarioService;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
+import jakarta.annotation.security.PermitAll;
+
 @RestController
 //@CrossOrigin(origins = "*", allowedHeaders = "*")
 @RequestMapping("/v1.0/resultados-examen-complementario")
@@ -34,6 +37,7 @@ public class ResultadosExamenComplementarioController {
 
 
     @GetMapping
+    @PermitAll
     public ResponseEntity<List<ResultadoExamenComplementarioDto>> obtenerResultados() {
         try {
             List<ResultadoExamenComplementarioDto> resultados = resultadoExamenComplementarioService.obtenerResultados();
@@ -45,6 +49,7 @@ public class ResultadosExamenComplementarioController {
     }
 
     @GetMapping("/{id}")
+    @PermitAll
     public ResponseEntity<ResultadoExamenComplementarioDto> obtenerResultadoPorId(@PathVariable int id) {
         try {
             ResultadoExamenComplementarioDto resultado = resultadoExamenComplementarioService.obtenerResultadoPorId(id);
@@ -55,6 +60,7 @@ public class ResultadosExamenComplementarioController {
         }
     }
     @GetMapping("/examenes-complementarios/{idExamenComplementario}")
+    @PermitAll
     public ResponseEntity<List<ResultadoExamenComplementarioDto>> obtenerResultadosDeExamen(@PathVariable int idExamenComplementario) {
         try {
             List<ResultadoExamenComplementarioDto> resultado = resultadoExamenComplementarioService.obtenerResultadosDeExamen(idExamenComplementario);
@@ -65,6 +71,7 @@ public class ResultadosExamenComplementarioController {
         }
     }
     @PostMapping
+    @PreAuthorize("hasAnyAuthority('MEDICO')")
     public ResponseEntity<ResultadoExamenComplementarioDto> crearResultado(
            @RequestParam("data") String data,
             @RequestParam("file") MultipartFile file) {
@@ -80,6 +87,7 @@ public class ResultadosExamenComplementarioController {
     }
 
     @PutMapping("/{id}")
+    @PreAuthorize("hasAnyAuthority('MEDICO')")
     public ResponseEntity<ResultadoExamenComplementarioDto> actualizarResultado(
             @PathVariable int id,
             @RequestParam("data") String data,
@@ -99,6 +107,7 @@ public class ResultadosExamenComplementarioController {
     }
 
     @DeleteMapping("/{id}")
+    @PreAuthorize("hasAnyAuthority('ADMINISTRADOR')")
     public ResponseEntity<Void> eliminarResultado(@PathVariable int id) {
         try {
             resultadoExamenComplementarioService.eliminarResultado(id);

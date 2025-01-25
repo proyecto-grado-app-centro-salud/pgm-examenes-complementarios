@@ -11,11 +11,16 @@ import org.springframework.data.domain.Page;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
 
+import com.example.microservicio_examenes_complementarios.models.UserMain;
 import com.example.microservicio_examenes_complementarios.models.dtos.ExamenComplementarioDto;
 import com.example.microservicio_examenes_complementarios.services.ContainerMetadataService;
 import com.example.microservicio_examenes_complementarios.services.ExamenesComplementariosService;
+
+import jakarta.annotation.security.PermitAll;
 
 
 
@@ -29,6 +34,7 @@ public class ExamenesComplementariosController {
     private ExamenesComplementariosService examenesComplementariosService;
 
     @PostMapping
+    @PreAuthorize("hasAnyAuthority('MEDICO')")
     public ResponseEntity<ExamenComplementarioDto> registrarExamenComplementario(@RequestBody ExamenComplementarioDto examenDto) {
         try {
             ExamenComplementarioDto nuevoExamen = examenesComplementariosService.registrarExamenComplementario(examenDto);
@@ -41,6 +47,7 @@ public class ExamenesComplementariosController {
     }
 
     @GetMapping
+    @PermitAll
     public ResponseEntity<Page<ExamenComplementarioDto>> obtenerTodosExamenesComplementarios(@RequestParam(required = false) String fechaInicio, @RequestParam(required = false) String fechaFin,@RequestParam(required = false) String ciPaciente,@RequestParam(required = false) String nombrePaciente,@RequestParam(required = false) String nombreMedico,@RequestParam(required = false) String nombreEspecialidad,@RequestParam(required = false) String diagnosticoPresuntivo,@RequestParam(required = false) Integer page,@RequestParam(required = false) Integer size) {
         try {
             Page<ExamenComplementarioDto> examenes = examenesComplementariosService.obtenerTodosExamenesComplementarios(fechaInicio,fechaFin,ciPaciente,nombrePaciente,nombreMedico,nombreEspecialidad,diagnosticoPresuntivo,page,size);
@@ -53,6 +60,7 @@ public class ExamenesComplementariosController {
     }
 
     @GetMapping("/{id}")
+    @PermitAll
     public ResponseEntity<ExamenComplementarioDto> obtenerExamenComplementarioPorId(@PathVariable Integer id) {
         try {
             ExamenComplementarioDto examen = examenesComplementariosService.obtenerExamenComplementarioPorId(id);
@@ -65,6 +73,7 @@ public class ExamenesComplementariosController {
     }
 
     @PutMapping("/{id}")
+    @PreAuthorize("hasAnyAuthority('MEDICO')")
     public ResponseEntity<ExamenComplementarioDto> actualizarExamenComplementario(@PathVariable Integer id, @RequestBody ExamenComplementarioDto examenDto) {
         try {
             ExamenComplementarioDto examenActualizado = examenesComplementariosService.actualizarExamenComplementario(id, examenDto);
@@ -74,9 +83,21 @@ public class ExamenesComplementariosController {
             return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
-    
+    @GetMapping("/mis-examenes")
+    @PermitAll
+    public ResponseEntity<Page<ExamenComplementarioDto>> obtenerMisExamenesDePaciente(@RequestParam(required = false) String fechaInicio, @RequestParam(required = false) String fechaFin,@RequestParam(required = false) String nombreMedico,@RequestParam(required = false) String nombreEspecialidad,@RequestParam(required = false) String diagnosticoPresuntivo,@RequestParam(required = false) Integer page,@RequestParam(required = false) Integer size) {
+        try {
+            String idPaciente = ((UserMain)SecurityContextHolder.getContext().getAuthentication().getPrincipal()).getUsername();
+            Page<ExamenComplementarioDto> examenes = examenesComplementariosService.obtenerExamenesDePaciente(idPaciente,fechaInicio,fechaFin,nombreMedico,nombreEspecialidad,diagnosticoPresuntivo,page,size);
+            return new ResponseEntity<>(examenes, HttpStatus.OK);
+        } catch (Exception e) {
+            e.printStackTrace();
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        }
+    }
     @GetMapping("/paciente/{idPaciente}")
-    public ResponseEntity<Page<ExamenComplementarioDto>> obtenerExamenesDePaciente(@PathVariable int idPaciente,@RequestParam(required = false) String fechaInicio, @RequestParam(required = false) String fechaFin,@RequestParam(required = false) String nombreMedico,@RequestParam(required = false) String nombreEspecialidad,@RequestParam(required = false) String diagnosticoPresuntivo,@RequestParam(required = false) Integer page,@RequestParam(required = false) Integer size) {
+    @PermitAll
+    public ResponseEntity<Page<ExamenComplementarioDto>> obtenerExamenesDePaciente(@PathVariable String idPaciente,@RequestParam(required = false) String fechaInicio, @RequestParam(required = false) String fechaFin,@RequestParam(required = false) String nombreMedico,@RequestParam(required = false) String nombreEspecialidad,@RequestParam(required = false) String diagnosticoPresuntivo,@RequestParam(required = false) Integer page,@RequestParam(required = false) Integer size) {
         try {
             Page<ExamenComplementarioDto> examenes = examenesComplementariosService.obtenerExamenesDePaciente(idPaciente,fechaInicio,fechaFin,nombreMedico,nombreEspecialidad,diagnosticoPresuntivo,page,size);
             return new ResponseEntity<>(examenes, HttpStatus.OK);
@@ -86,10 +107,12 @@ public class ExamenesComplementariosController {
         }
     }
     @GetMapping("/info-container")
+    @PermitAll
     public @ResponseBody String obtenerInformacionContenedor() {
         return "microservicio historias clinicas: " + containerMetadataService.retrieveContainerMetadataInfo();
     }
     @GetMapping("/pdf")
+    @PreAuthorize("hasAnyAuthority('ADMINISTRADOR','MEDICO')")
     public ResponseEntity<byte[]> obtenerPDFDeExamenComplementario(ExamenComplementarioDto examenComplementarioDto) {
         try {
             byte[] pdfBytes = examenesComplementariosService.obtenerPDFExamenComplementario(examenComplementarioDto);
@@ -107,9 +130,21 @@ public class ExamenesComplementariosController {
         }
     }
     @DeleteMapping(value = "/{id}")
+    @PreAuthorize("hasAnyAuthority('ADMINISTRADOR')")
     public ResponseEntity<Void> delete(@PathVariable int id) {
         try{
             examenesComplementariosService.delete(id);
+            return new ResponseEntity<>(HttpStatus.OK);
+        } catch (Exception e) {
+            e.printStackTrace();
+            return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+    }
+    @DeleteMapping(value = "/historia-clinica/{id}")
+    @PreAuthorize("hasAnyAuthority('ADMINISTRADOR')")
+    public ResponseEntity<Void> deleteExamenesComplementariosDeHistoriaClinica(@PathVariable int id) {
+        try{
+            examenesComplementariosService.deleteExamenesComplementariosDeHistoriaClinica(id);
             return new ResponseEntity<>(HttpStatus.OK);
         } catch (Exception e) {
             e.printStackTrace();

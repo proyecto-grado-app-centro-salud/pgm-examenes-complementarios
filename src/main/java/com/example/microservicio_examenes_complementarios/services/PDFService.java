@@ -45,7 +45,7 @@ public class PDFService {
     ExamenesComplementariosRepositoryJPA examenesComplementariosRepositoryJPA;
 
     public byte[] generarPdfReporteExamenComplementario(ExamenComplementarioDto examenComplementarioDto) throws JRException {
-        Optional<ExamenComplementarioEntity> examenComplementarioEntityOptional=(examenComplementarioDto.getId()!=null)?examenesComplementariosRepositoryJPA.findById(examenComplementarioDto.getId()):Optional.empty();
+        Optional<ExamenComplementarioEntity> examenComplementarioEntityOptional=(examenComplementarioDto.getId()!=null)?examenesComplementariosRepositoryJPA.findByIdExamenComplementarioAndDeletedAtIsNull(examenComplementarioDto.getId()):Optional.empty();
         if(examenComplementarioEntityOptional.isPresent()){
             examenComplementarioDto=new ExamenComplementarioDto().convertirExamenComplementarioEntityAExamenComplementarioDto(examenComplementarioEntityOptional.get());
         }else{
@@ -53,10 +53,10 @@ public class PDFService {
             examenComplementarioDto.setUpdatedAt(new Date());
         }
         InputStream jrxmlInputStream = getClass().getClassLoader().getResourceAsStream("reports/examen_complementario.jrxml");
-        HistoriaClinicaEntity historiaClinicaEntity = historiaClinicaRepositoryJPA.findById(examenComplementarioDto.getIdHistoriaClinica()).orElseThrow(() -> new RuntimeException("Historia clinica no encontrada"));
-        UsuarioEntity pacienteEntity = usuariosRepositoryJPA.findById(historiaClinicaEntity.getPaciente().getIdUsuario()).orElseThrow(() -> new RuntimeException("Usuario no encontrado"));
-        UsuarioEntity medicoEntity = usuariosRepositoryJPA.findById(examenComplementarioDto.getIdMedico()).orElseThrow(() -> new RuntimeException("Usuario no encontrado"));
-        EspecialidadesEntity especialidadesEntity = especialidadesRepositoryJPA.findById(historiaClinicaEntity.getEspecialidad().getIdEspecialidad()).orElseThrow(() -> new RuntimeException("Especialidad no encontrada"));
+        HistoriaClinicaEntity historiaClinicaEntity = historiaClinicaRepositoryJPA.findByIdHistoriaClinicaAndDeletedAtIsNull(examenComplementarioDto.getIdHistoriaClinica()).orElseThrow(() -> new RuntimeException("Historia clinica no encontrada"));
+        UsuarioEntity pacienteEntity = usuariosRepositoryJPA.findByIdUsuarioAndDeletedAtIsNull(historiaClinicaEntity.getPaciente().getIdUsuario()).orElseThrow(() -> new RuntimeException("Usuario no encontrado"));
+        UsuarioEntity medicoEntity = usuariosRepositoryJPA.findByIdUsuarioAndDeletedAtIsNull(examenComplementarioDto.getIdMedico()).orElseThrow(() -> new RuntimeException("Usuario no encontrado"));
+        EspecialidadesEntity especialidadesEntity = especialidadesRepositoryJPA.findByIdEspecialidadAndDeletedAtIsNull(historiaClinicaEntity.getEspecialidad().getIdEspecialidad()).orElseThrow(() -> new RuntimeException("Especialidad no encontrada"));
         if (jrxmlInputStream == null) {
             throw new JRException("No se pudo encontrar el archivo .jrxml en el classpath.");
         }
