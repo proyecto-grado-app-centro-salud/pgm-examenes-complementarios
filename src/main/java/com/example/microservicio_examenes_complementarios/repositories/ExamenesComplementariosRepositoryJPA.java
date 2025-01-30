@@ -21,13 +21,13 @@ public interface ExamenesComplementariosRepositoryJPA extends JpaRepository<Exam
     + "JOIN ec.historiaClinica hc "
     + "JOIN hc.paciente p "
     + "WHERE p.idUsuario = :idPaciente")
-    List<ExamenComplementarioEntity> obtenerExamenesComplementariosPaciente(@Param("idPaciente") int idPaciente);
+    List<ExamenComplementarioEntity> obtenerExamenesComplementariosPaciente(@Param("idPaciente") String idPaciente);
 
     Optional<ExamenComplementarioEntity> findByIdExamenComplementarioAndDeletedAtIsNull(
             int idExamenComplementario);
 
     @Modifying
-    @Query(value = "UPDATE examenes_complementarios SET deleted_at = ?2 WHERE id_historia_clinica = ?1", nativeQuery = true)
+    @Query(value = "UPDATE examenes_complementarios SET deleted_at = ?2 WHERE id_historia_clinica = ?1 AND deleted_at IS NULL", nativeQuery = true)
     void markAsDeletedAllExamenesComplementariosFromHistoriaClinica(int idHistoriaClinica, Date date);
 
 }

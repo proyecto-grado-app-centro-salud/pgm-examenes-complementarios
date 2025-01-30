@@ -25,7 +25,7 @@ import jakarta.annotation.security.PermitAll;
 
 
 @RestController
-@CrossOrigin(origins = "*", allowedHeaders = "*", methods = {RequestMethod.DELETE, RequestMethod.GET, RequestMethod.POST, RequestMethod.PUT,RequestMethod.OPTIONS})
+//@CrossOrigin(origins = "*", allowedHeaders = "*")
 @RequestMapping(path = "/examenes-complementarios")
 public class ExamenesComplementariosController {
     @Autowired

@@ -29,7 +29,7 @@ public class UsuarioEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id_usuario")
-    private int idUsuario;
+    private String idUsuario;
 
     @Column(name = "nombres")
     private String nombres;
